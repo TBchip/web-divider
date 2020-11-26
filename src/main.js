@@ -37,5 +37,6 @@ http.createServer(function(req, res) {
 
 /* set up https server */
 const httpsServer = spdy.createServer(credentials, function(req, res) {
-    proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[req.headers.host] });
+    let parsedHost = req.headers.host.replace("www.", "");
+    proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[parsedHost] });
 }).listen(httpsPort);

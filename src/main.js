@@ -6,7 +6,7 @@ const httpProxy = require("http-proxy");
 const port = 50783;
 const options = {  
     "computerkoninguden.nl": "http://192.168.2.1:6211",
-    "https://computerkoninguden.nl": "http://192.168.2.1:6211",
+    // "https://computerkoninguden.nl": "http://192.168.2.1:6211",
     "62.131.213.61": "http://192.168.2.1:34699"
 }
 

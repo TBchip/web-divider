@@ -15,8 +15,11 @@ const HttpsRedirectUrls = ["computerkoninguden.nl"];
 
 
 http.createServer(function(req, res) {
-    if(HttpsRedirectUrls.includes(req.headers.host))
+    if(HttpsRedirectUrls.includes(req.headers.host)){
+        console.log("redirecting")
         res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
+        res.end();
+    }
     else	
         proxy.web(req, res, { target: options[req.headers.host] });
 }).listen(httpPort);

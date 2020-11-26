@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "http-proxy": "^1.18.1",
     "spdy": "^4.0.2"

@@ -27,6 +27,8 @@ const credentials = {
 
 /* set up http server */
 http.createServer(function(req, res) {
+    logConnection(req, res);
+
     if(HttpsRedirect.includes(req.headers.host)){
         res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
         res.end();
@@ -37,6 +39,8 @@ http.createServer(function(req, res) {
 
 /* set up https server */
 const httpsServer = spdy.createServer(credentials, function(req, res) {
+    logConnection(req, res);
+    
     let parsedHost = req.headers.host.replace("www.", "");
     proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[parsedHost] });
 }).listen(httpsPort);

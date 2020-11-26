@@ -11,20 +11,9 @@ const options = {
     "computerkoninguden.nl": "http://192.168.2.1:51303",
     "62.131.213.61": "http://192.168.2.1:51304"
 }
-const HttpsRedirectUrls = ["computerkoninguden.nl"];
+const HttpsRedirect = ["computerkoninguden.nl"];
 
-
-http.createServer(function(req, res) {
-    if(HttpsRedirectUrls.includes(req.headers.host)){
-        console.log("redirecting")
-        res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
-        res.end();
-    }
-    else	
-        proxy.web(req, res, { target: options[req.headers.host] });
-}).listen(httpPort);
-
-
+/* https credentials, all certificates should be in one */
 const privateKey = fs.readFileSync("/etc/letsencrypt/live/computerkoninguden.nl/privkey.pem", "utf8");
 const certificate = fs.readFileSync("/etc/letsencrypt/live/computerkoninguden.nl/cert.pem", "utf8");
 const ca = fs.readFileSync("/etc/letsencrypt/live/computerkoninguden.nl/chain.pem", "utf8");
@@ -34,6 +23,19 @@ const credentials = {
 	ca: ca
 };
 
+
+/* set up http server */
+http.createServer(function(req, res) {
+    if(HttpsRedirect.includes(req.headers.host)){
+        res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
+        res.end();
+    }
+    else{
+        proxy.web(req, res, { target: options[req.headers.host] });
+    }
+}).listen(httpPort);
+
+/* set up https server */
 const httpsServer = spdy.createServer(credentials, function(req, res) {
     proxy.web(req, res, { target: options[req.headers.host] });
 }).listen(httpsPort);

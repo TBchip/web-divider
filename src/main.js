@@ -30,8 +30,7 @@ http.createServer(function(req, res) {
     if(HttpsRedirect.includes(req.headers.host)){
         res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
         res.end();
-    }
-    else{
+    } else{
         proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[req.headers.host] });
     }
 }).listen(httpPort);

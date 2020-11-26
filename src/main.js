@@ -3,21 +3,23 @@ const spdy = require("spdy");
 const fs = require("fs");
 const httpProxy = require("http-proxy");
 
-const port = 50783;
-const options = {  
-    "computerkoninguden.nl": "http://192.168.2.1:6211",
-    // "https://computerkoninguden.nl": "http://192.168.2.1:6211",
-    "62.131.213.61": "http://192.168.2.1:34699"
-}
-
-
+const httpPort = 51301;
+const httpsPort = 51302;
 let proxy = httpProxy.createProxy();
 
-http.createServer(function(req, res) {
-    console.log(req.headers.host);
-    proxy.web(req, res, { target: options[req.headers.host] });
-}).listen(80);
+const options = {  
+    "computerkoninguden.nl": "http://192.168.2.1:51303",
+    "62.131.213.61": "http://192.168.2.1:51304"
+}
+const HttpsRedirectUrls = ["computerkoninguden.nl"];
 
+
+http.createServer(function(req, res) {
+    if(HttpsRedirectUrls.includes(req.headers.host))
+        res.redirect("https://" + req.headers.host + req.url);
+    else	
+        proxy.web(req, res, { target: options[req.headers.host] });
+}).listen(httpPort);
 
 
 const privateKey = fs.readFileSync("/etc/letsencrypt/live/computerkoninguden.nl/privkey.pem", "utf8");
@@ -30,7 +32,5 @@ const credentials = {
 };
 
 const httpsServer = spdy.createServer(credentials, function(req, res) {
-    console.log(req.headers.host);
     proxy.web(req, res, { target: options[req.headers.host] });
-});
-httpsServer.listen(443);
+}).listen(httpsPort);

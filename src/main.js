@@ -33,7 +33,8 @@ http.createServer(function(req, res) {
         res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
         res.end();
     } else{
-        proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[req.headers.host] });
+        let parsedHost = req.headers.host.replace("www.", "");
+        proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[parsedHost] });
     }
 }).listen(httpPort);
 

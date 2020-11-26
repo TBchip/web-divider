@@ -28,22 +28,37 @@ const credentials = {
 /* set up http server */
 http.createServer(function(req, res) {
     logConnection(req, res);
-    console.log(req.headers.host, req.url);
 
     let parsedHost = req.headers.host.replace("www.", "");
+    let targetPort = serverPorts[parsedHost];
+
+    //check for https redirect
     if(HttpsRedirect.includes(parsedHost)){
         res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
         res.end();
-    } else{
-        proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[parsedHost] });
+    } else {
+        //send to right webserver
+        if(targetPort === undefined){
+            res.writeHead(404);
+            res.end();
+        } else{
+            proxy.web(req, res, { target: "http://192.168.2.1:" + targetPort });
+        }
     }
 }).listen(httpPort);
 
 /* set up https server */
 const httpsServer = spdy.createServer(credentials, function(req, res) {
     logConnection(req, res);
-    console.log(req.headers.host, req.url);
     
     let parsedHost = req.headers.host.replace("www.", "");
-    proxy.web(req, res, { target: "http://192.168.2.1:" + serverPorts[parsedHost] });
+    let targetPort = serverPorts[parsedHost];
+
+    //send to right webserver
+    if(targetPort === undefined){
+        res.writeHead(404);
+        res.end()
+    } else{
+        proxy.web(req, res, { target: "http://192.168.2.1:" + targetPort });
+    }
 }).listen(httpsPort);

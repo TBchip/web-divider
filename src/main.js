@@ -2,6 +2,7 @@ const http = require("http");
 const spdy = require("spdy");
 const fs = require("fs");
 const httpProxy = require("http-proxy");
+const logConnection = require("./logger.js");
 
 const httpPort = 51301;
 const httpsPort = 51302;

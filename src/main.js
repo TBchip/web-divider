@@ -8,8 +8,8 @@ const httpsPort = 51302;
 let proxy = httpProxy.createProxy();
 
 const options = {  
-    "computerkoninguden.nl": "http://192.168.2.1:51303",
-    "62.131.213.61": "http://192.168.2.1:51304"
+    "computerkoninguden.nl": "51303",
+    "62.131.213.61": "51304"
 }
 const HttpsRedirect = ["computerkoninguden.nl"];
 
@@ -31,11 +31,11 @@ http.createServer(function(req, res) {
         res.end();
     }
     else{
-        proxy.web(req, res, { target: options[req.headers.host] });
+        proxy.web(req, res, { target: "http://192.168.2.1:" + options[req.headers.host] });
     }
 }).listen(httpPort);
 
 /* set up https server */
 const httpsServer = spdy.createServer(credentials, function(req, res) {
-    proxy.web(req, res, { target: options[req.headers.host] });
+    proxy.web(req, res, { target: "http://192.168.2.1:" + options[req.headers.host] });
 }).listen(httpsPort);

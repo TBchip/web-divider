@@ -1,7 +1,7 @@
 const http = require("http");
 const httpProxy = require("http-proxy");
 
-const port = 92783;
+const port = 50783;
 const options = {  
     "computerkoninguden.nl": "http://62.131.213.61:6211",
     "62.131.213.61": "http://62.131.213.61:34699"

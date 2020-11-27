@@ -3,14 +3,16 @@ const spdy = require("spdy");
 const fs = require("fs");
 const httpProxy = require("http-proxy");
 const logConnection = require("./logger.js");
+const parseHost = require("./hostManager.js");
 
 const httpPort = 51301;
 const httpsPort = 51302;
 let proxy = httpProxy.createProxy();
 
-const serverPorts = {  
+const portConfig = {  
     "computerkoninguden.nl": "51303",
-    "62.131.213.61": "51304"
+    "62.131.213.61": "51304",
+    "undefined": "undefined"
 }
 const HttpsRedirect = ["computerkoninguden.nl"];
 
@@ -24,21 +26,20 @@ const credentials = {
 	ca: ca
 };
 
-
 /* set up http server */
 http.createServer(function(req, res) {
     logConnection(req, res);
-
-    let parsedHost = req.headers.host.replace("www.", "");
-    let targetPort = serverPorts[parsedHost];
+    
+    let host = parseHost(req.headers.host);
+    let targetPort = portConfig[host];
 
     //check for https redirect
-    if(HttpsRedirect.includes(parsedHost)){
+    if(HttpsRedirect.includes(host)){
         res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
         res.end();
     } else {
         //send to right webserver
-        if(targetPort === undefined){
+        if(targetPort === "undefined"){
             res.writeHead(404);
             res.end();
         } else{
@@ -51,11 +52,11 @@ http.createServer(function(req, res) {
 const httpsServer = spdy.createServer(credentials, function(req, res) {
     logConnection(req, res);
     
-    let parsedHost = req.headers.host.replace("www.", "");
-    let targetPort = serverPorts[parsedHost];
+    let host = parseHost(req.headers.host);
+    let targetPort = portConfig[host];
 
     //send to right webserver
-    if(targetPort === undefined){
+    if(targetPort === "undefined"){
         res.writeHead(404);
         res.end()
     } else{

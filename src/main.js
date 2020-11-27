@@ -11,8 +11,7 @@ let proxy = httpProxy.createProxy();
 
 const portConfig = {  
     "computerkoninguden.nl": "51303",
-    "62.131.213.61": "51304",
-    "undefined": undefined
+    "62.131.213.61": "51304"
 }
 const HttpsRedirect = ["computerkoninguden.nl"];
 

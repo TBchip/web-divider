@@ -11,7 +11,7 @@ function parseHost(host){
 
         return host;
     }else{
-        return "undefined";
+        return undefined;
     }
 }
 

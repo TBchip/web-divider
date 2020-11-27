@@ -12,7 +12,7 @@ let proxy = httpProxy.createProxy();
 const portConfig = {  
     "computerkoninguden.nl": "51303",
     "62.131.213.61": "51304",
-    "undefined": "undefined"
+    "undefined": undefined
 }
 const HttpsRedirect = ["computerkoninguden.nl"];
 
@@ -39,7 +39,7 @@ http.createServer(function(req, res) {
         res.end();
     } else {
         //send to right webserver
-        if(targetPort === "undefined"){
+        if(targetPort === undefined){
             res.writeHead(404);
             res.end();
         } else{
@@ -56,7 +56,7 @@ const httpsServer = spdy.createServer(credentials, function(req, res) {
     let targetPort = portConfig[host];
 
     //send to right webserver
-    if(targetPort === "undefined"){
+    if(targetPort === undefined){
         res.writeHead(404);
         res.end()
     } else{

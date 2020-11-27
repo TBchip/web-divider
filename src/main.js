@@ -32,7 +32,6 @@ http.createServer(function(req, res) {
     
     let host = parseHost(req.headers.host);
     let targetPort = portConfig[host];
-    console.log(host, targetPort);
 
     //check for https redirect
     if(HttpsRedirect.includes(host)){
@@ -55,7 +54,6 @@ const httpsServer = spdy.createServer(credentials, function(req, res) {
     
     let host = parseHost(req.headers.host);
     let targetPort = portConfig[host];
-    console.log(host, targetPort);
 
     //send to right webserver
     if(targetPort === "undefined"){

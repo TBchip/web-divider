@@ -48,7 +48,7 @@ http.createServer(function(req, res) {
 }).listen(httpPort);
 
 /* set up https server */
-const httpsServer = spdy.createServer(credentials, function(req, res) {
+spdy.createServer(credentials, function(req, res) {
     logConnection(req, res);
     
     let host = parseHost(req.headers.host);

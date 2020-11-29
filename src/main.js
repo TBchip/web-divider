@@ -1,18 +1,21 @@
 const http = require("http");
 const spdy = require("spdy");
 const fs = require("fs");
-const httpProxy = require("http-proxy");
+// const httpProxy = require("http-proxy");
 const logConnection = require("./logger.js");
 const parseHost = require("./hostManager.js");
 
+const proxyConfig = require("./proxyConfig.js");
+
 const httpPort = 51301;
 const httpsPort = 51302;
-let proxy = httpProxy.createProxy();
 
-const portConfig = {  
-    "computerkoninguden.nl": "51303",
-    "62.131.213.61": "51304"
-}
+// let proxy = httpProxy.createProxyServer();
+
+// const portConfig = {  
+//     "computerkoninguden.nl": "51303",
+//     "62.131.213.61": "51304"
+// }
 const HttpsRedirect = ["computerkoninguden.nl"];
 
 /* https credentials, all certificates should be in one */
@@ -30,7 +33,7 @@ http.createServer(function(req, res) {
     logConnection(req, res);
     
     let host = parseHost(req.headers.host);
-    let targetPort = portConfig[host];
+    // let targetPort = portConfig[host];
 
     //check for https redirect
     if(HttpsRedirect.includes(host)){
@@ -38,11 +41,25 @@ http.createServer(function(req, res) {
         res.end();
     } else {
         //send to right webserver
-        if(targetPort === undefined){
+        let targetProxy = proxyConfig[host];
+        // if(targetPort === undefined){
+        //     res.writeHead(404);
+        //     res.end();
+        // } else{
+        //     proxy.web(req, res, { target: "http://192.168.2.1:" + targetPort });
+        // }
+        let targetProxy = proxyConfig[host];
+        if(targetProxy === undefined){
             res.writeHead(404);
             res.end();
         } else{
-            proxy.web(req, res, { target: "http://192.168.2.1:" + targetPort });
+            targetProxy.proxyRequest(req, res);
+            proxy_api.on("error", function(err, req, res) {
+                if (err) console.log(err);
+
+                res.writeHead(500);
+                res.end('Sorry, an internal error occurred.');
+            });
         }
     }
 }).listen(httpPort);
@@ -52,13 +69,26 @@ spdy.createServer(credentials, function(req, res) {
     logConnection(req, res);
     
     let host = parseHost(req.headers.host);
-    let targetPort = portConfig[host];
+    // let targetPort = portConfig[host];
 
     //send to right webserver
-    if(targetPort === undefined){
+    // if(targetPort === undefined){
+    //     res.writeHead(404);
+    //     res.end()
+    // } else{
+    //     proxy.web(req, res, { target: "http://192.168.2.1:" + targetPort });
+    // }
+    let targetProxy = proxyConfig[host];
+    if(targetProxy === undefined){
         res.writeHead(404);
         res.end()
     } else{
-        proxy.web(req, res, { target: "http://192.168.2.1:" + targetPort });
+        targetProxy.proxyRequest(req, res);
+        proxy_api.on("error", function(err, req, res) {
+            if (err) console.log(err);
+
+            res.writeHead(500);
+            res.end('Sorry, an internal error occurred.');
+        });
     }
 }).listen(httpsPort);

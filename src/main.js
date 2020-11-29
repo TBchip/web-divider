@@ -42,7 +42,6 @@ http.createServer(function(req, res) {
         res.end();
     } else {
         //send to right webserver
-        let targetProxy = proxyConfig[host];
         // if(targetPort === undefined){
         //     res.writeHead(404);
         //     res.end();

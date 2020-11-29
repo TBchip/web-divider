@@ -54,7 +54,7 @@ http.createServer(function(req, res) {
             res.end();
         } else{
             targetProxy.proxyRequest(req, res);
-            proxy_api.on("error", function(err, req, res) {
+            targetProxy.on("error", function(err, req, res) {
                 if (err) console.log(err);
 
                 res.writeHead(500);
@@ -84,7 +84,7 @@ spdy.createServer(credentials, function(req, res) {
         res.end()
     } else{
         targetProxy.proxyRequest(req, res);
-        proxy_api.on("error", function(err, req, res) {
+        targetProxy.on("error", function(err, req, res) {
             if (err) console.log(err);
 
             res.writeHead(500);

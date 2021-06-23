@@ -17,7 +17,6 @@ const HttpsRedirect = ["computerkoninguden.nl"];
 http.createServer(function(req, res) {
     logConnection(req, res);
     
-    res.end("test");
     let host = getDomain(req.headers.host);
 
     //check for https redirect

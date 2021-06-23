@@ -1,17 +1,23 @@
 const httpProxy = require("http-proxy");
 
+const credentials = require("./sslCert.js");
+
 const config = {  
-    "computerkoninguden.nl": "51303",
-    "62.131.213.61": "51304"
+    "thijsbischoff.nl": "51308"
 }
 
 let proxies = {};
 for (const [host, port] of Object.entries(config)) {
-    let proxy = httpProxy.createProxyServer({
-        target: {
-            host: "localhost",
-            port: port
-        }
+    let proxy = {
+        "port": port
+    };
+    proxy["httpProxy"] = httpProxy.createProxyServer({
+        target: "http://localhost:"+proxy["port"],
+    });
+    proxy["httpsProxy"] = httpProxy.createProxyServer({
+        target: "https://localhost:"+proxy["port"],
+        ssl: credentials,
+        secure: true
     });
 
     proxies[host] = proxy;

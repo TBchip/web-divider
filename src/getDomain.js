@@ -1,4 +1,4 @@
-function parseHost(host){
+function getDomain(host){
     if(typeof(host) === "string"){
         if(host.includes("http"))
             host = host.split("//")[1];
@@ -9,10 +9,13 @@ function parseHost(host){
         if(host.includes(":"))
             host = host.split(":")[0];
 
+        if(host.includes("/"))
+            host = host.split("/")[0];
+
         return host;
     }else{
         return undefined;
     }
 }
 
-module.exports = parseHost;
+module.exports = getDomain;

@@ -3,7 +3,8 @@ const httpProxy = require("http-proxy");
 const credentials = require("./sslCert.js");
 
 const config = {  
-    "thijsbischoff.nl": "51308,51309"
+    "thijsbischoff.nl": "51308,51309",
+    "computerkoninguden.nl": "51303,51305"
 }
 
 let proxies = {};

@@ -52,7 +52,7 @@ spdy.createServer(credentials, function(req, res) {
         res.end()
     } else{
         targetProxy["httpsProxy"].web(req, res, { target: "https://localhost:"+targetProxy["httpsPort"] });
-        targetProxy.on("error", function(err, req, res) {
+        targetProxy["httpsProxy"].on("error", function(err, req, res) {
             if (err) console.log(err);
 
             res.writeHead(500);

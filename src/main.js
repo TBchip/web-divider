@@ -18,28 +18,28 @@ http.createServer(function(req, res) {
     logConnection(req, res);
     
     res.end("test");
-    // let host = getDomain(req.headers.host);
+    let host = getDomain(req.headers.host);
 
-    // //check for https redirect
-    // if(HttpsRedirect.includes(host)){
-    //     res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
-    //     res.end();
-    // } else {
-    //     if(proxyConfig[host] === undefined){
-    //         res.writeHead(404);
-    //         res.end();
-    //     } else{
-    //         targetProxy = proxyConfig[host];
+    //check for https redirect
+    if(HttpsRedirect.includes(host)){
+        res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
+        res.end();
+    } else {
+        if(proxyConfig[host] === undefined){
+            res.writeHead(404);
+            res.end();
+        } else{
+            targetProxy = proxyConfig[host];
 
-    //         targetProxy["httpProxy"].web(req, res, { target: "http://localhost:"+targetProxy["port"] });
-    //         targetProxy["httpProxy"].on("error", function(err, req, res) {
-    //             if (err) console.log(err);
+            targetProxy["httpProxy"].web(req, res, { target: "http://localhost:"+targetProxy["port"] });
+            targetProxy["httpProxy"].on("error", function(err, req, res) {
+                if (err) console.log(err);
 
-    //             res.writeHead(500);
-    //             res.end("Sorry, an internal error occurred.");
-    //         });
-    //     }
-    // }
+                res.writeHead(500);
+                res.end("Sorry, an internal error occurred.");
+            });
+        }
+    }
 }).listen(httpPort);
 
 /* set up https server */

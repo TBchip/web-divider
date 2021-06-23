@@ -44,7 +44,7 @@ http.createServer(function(req, res) {
 spdy.createServer(credentials, function(req, res) {
     logConnection(req, res);
     
-    let host = parseHost(req.headers.host);
+    let host = getDomain(req.headers.host);
 
     let targetProxy = proxyConfig[host];
     if(targetProxy === undefined){

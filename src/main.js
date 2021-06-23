@@ -24,13 +24,12 @@ http.createServer(function(req, res) {
         res.writeHead(302, {'Location': 'https://' + req.headers.host + req.url});
         res.end();
     } else {
-        if(proxyConfig[host] === undefined){
+        let targetProxy = proxyConfig[host];
+        if(targetProxy === undefined){
             res.writeHead(404);
             res.end();
         } else{
-            targetProxy = proxyConfig[host];
-
-            targetProxy["httpProxy"].web(req, res, { target: "http://localhost:"+targetProxy["port"] });
+            targetProxy["httpProxy"].web(req, res, { target: "http://localhost:"+targetProxy["httpPort"] });
             targetProxy["httpProxy"].on("error", function(err, req, res) {
                 if (err) console.log(err);
 
@@ -42,30 +41,22 @@ http.createServer(function(req, res) {
 }).listen(httpPort);
 
 /* set up https server */
-// spdy.createServer(credentials, function(req, res) {
-//     logConnection(req, res);
+spdy.createServer(credentials, function(req, res) {
+    logConnection(req, res);
     
-//     let host = parseHost(req.headers.host);
-//     // let targetPort = portConfig[host];
+    let host = parseHost(req.headers.host);
 
-//     //send to right webserver
-//     // if(targetPort === undefined){
-//     //     res.writeHead(404);
-//     //     res.end()
-//     // } else{
-//     //     proxy.web(req, res, { target: "http://192.168.2.1:" + targetPort });
-//     // }
-//     let targetProxy = proxyConfig[host];
-//     if(targetProxy === undefined){
-//         res.writeHead(404);
-//         res.end()
-//     } else{
-//         targetProxy.proxyRequest(req, res);
-//         targetProxy.on("error", function(err, req, res) {
-//             if (err) console.log(err);
+    let targetProxy = proxyConfig[host];
+    if(targetProxy === undefined){
+        res.writeHead(404);
+        res.end()
+    } else{
+        targetProxy["httpsProxy"].web(req, res, { target: "https://localhost:"+targetProxy["httpsPort"] });
+        targetProxy.on("error", function(err, req, res) {
+            if (err) console.log(err);
 
-//             res.writeHead(500);
-//             res.end('Sorry, an internal error occurred.');
-//         });
-//     }
-// }).listen(httpsPort);
+            res.writeHead(500);
+            res.end('Sorry, an internal error occurred.');
+        });
+    }
+}).listen(httpsPort);

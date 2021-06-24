@@ -49,7 +49,7 @@ spdy.createServer(credentials, function(req, res) {
     let targetProxy = proxyConfig[host];
     if(targetProxy === undefined){
         res.writeHead(404);
-        res.end()
+        res.end();
     } else{
         targetProxy["httpsProxy"].web(req, res, { target: "https://localhost:"+targetProxy["httpsPort"] });
         targetProxy["httpsProxy"].on("error", function(err, req, res) {

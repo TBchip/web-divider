@@ -19,7 +19,7 @@ for (const [host, port] of Object.entries(config)) {
     proxy["httpsProxy"] = httpProxy.createProxyServer({
         target: "https://localhost:"+proxy["httpsPort"],
         ssl: credentials,
-        secure: true
+        secure: false
     });
 
     proxies[host] = proxy;
